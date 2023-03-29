@@ -7,6 +7,9 @@ import 'package:park_perak_enhancement/constants.dart';
 import 'package:park_perak_enhancement/screens/pay_for_parking/location_screen.dart';
 import 'package:park_perak_enhancement/screens/pay_for_parking/vehicle_screen.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class PayForParkingScreen extends StatefulWidget {
   const PayForParkingScreen({Key? key}) : super(key: key);
 
@@ -15,11 +18,13 @@ class PayForParkingScreen extends StatefulWidget {
 }
 
 class _PayForParkingScreenState extends State<PayForParkingScreen> {
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+
   String pbtName = '';
   String pbtLogoPath = '';
   String plateNo = '';
 
-  String myPass = 'Basic';
+  String parkingPass = 'Basic';
   List<String> passType = ['Basic', 'Daily', 'Monthly'];
 
   Duration duration = const Duration(minutes: 30);
@@ -36,16 +41,12 @@ class _PayForParkingScreenState extends State<PayForParkingScreen> {
 
   double accountBalance = 10;
 
+  bool isActive = true;
+
   @override
   void initState() {
     super.initState();
     updateDuration();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        currentTime = DateTime.now();
-      });
-      updateEndTime();
-    });
   }
 
   void updatepbtName(String input){
@@ -70,7 +71,7 @@ class _PayForParkingScreenState extends State<PayForParkingScreen> {
 
   void updatePass(String passType){
     setState(() {
-      myPass = passType;
+      parkingPass = passType;
     });
   }
 
@@ -99,6 +100,65 @@ class _PayForParkingScreenState extends State<PayForParkingScreen> {
     });
   }
 
+  void submitPayForParking() async {
+    currentTime = DateTime.now();
+    updateEndTime();
+
+    if(inputValidation() == false) return;
+
+    // Create a new document in the "orders" collection
+    CollectionReference ordersCollection = FirebaseFirestore.instance.collection('parking');
+    DocumentReference newOrderRef = await ordersCollection.add({
+      'userId': userId,
+      'startTime': currentTime,
+      'pbt': pbtName,
+      'plateNo': plateNo,
+      'parkingPass': parkingPass,
+      'duration': duration.inMinutes,
+      'endTime': endTime,
+      'amount': amount,
+      'isActive': isActive
+    });
+
+    Navigator.of(context).pop();
+
+    // Get the ID of the new order document
+    String orderId = newOrderRef.id;
+  }
+
+  bool inputValidation(){
+    if (pbtName.isEmpty){
+      _showAlertDialog(context, 'PBT(Location)');
+      return false;
+    }
+    if(plateNo.isEmpty){
+      _showAlertDialog(context, 'Vehicle');
+      return false;
+    }
+    return true;
+  }
+
+  void _showAlertDialog(BuildContext context, alertMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Empty Input"),
+          content: Text("Please choose your $alertMessage"),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                // Do something when the user presses the OK button.
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -118,7 +178,7 @@ class _PayForParkingScreenState extends State<PayForParkingScreen> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(8.0),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: submitPayForParking,
           child: Text('Pay'),
           style: ElevatedButton.styleFrom(
             primary: Colors.black,
