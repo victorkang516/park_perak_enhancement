@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "405431807934",
+    "project_id": "perakparkenhanced",
+    "storage_bucket": "perakparkenhanced.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405431807934:android:b9636f8c5f9771240613ef",
+        "android_client_info": {
+          "package_name": "com.example.park_perak_enhancement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405431807934-a1nqn714jgi5sdp0cl6lqnc347qbkok2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.park_perak_enhancement",
+            "certificate_hash": "35007f397ecd224ecc594c6cd87b12b0adb437a8"
+          }
+        },
+        {
+          "client_id": "405431807934-fslc9nste1pgd7uf93aka6n4d9hh8nt9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5E2C49AxgPNBt91b-8_JZUYJNSar3c0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405431807934-fslc9nste1pgd7uf93aka6n4d9hh8nt9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "405431807934-3u01jjsto8ved892o0t1gv673ak6ev4f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.parkPerakEnhancement"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
